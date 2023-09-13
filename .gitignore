@@ -1,0 +1,17 @@
+# Ignore Go binary and object files
+backend/*.exe
+backend/*.exe~
+backend/*.dll
+backend/*.so
+backend/*.dylib
+backend/_test/
+
+# Ignore SvelteKit build output
+frontend/node_modules/
+frontend/.svelte/
+frontend/public/build/
+
+# Ignore Go dependencies
+/go.sum
+/go.mod
+/bin/

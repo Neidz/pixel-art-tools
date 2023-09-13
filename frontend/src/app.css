@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	body {
+		@apply text-textSecondary;
+	}
+}
+
+@layer components {
+	.button-primary {
+		@apply bg-primaryDark;
+		@apply px-2 py-1;
+		@apply rounded;
+		@apply border-solid border-primaryLight;
+		@apply hover:bg-primaryLight;
+	}
+}
