@@ -5,6 +5,7 @@ backend/*.dll
 backend/*.so
 backend/*.dylib
 backend/_test/
+backend/cmd/console/console
 
 # Ignore SvelteKit build output
 frontend/node_modules/
@@ -15,3 +16,6 @@ frontend/public/build/
 /go.sum
 /go.mod
 /bin/
+
+# Local
+local.README.md

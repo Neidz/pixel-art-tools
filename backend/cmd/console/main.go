@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	imagePath := "/../../assets/crewmate.png"
+	imagePath := "/home/neidz/Projects/pixel-art-tools/backend/assets/crewmate.png"
 
 	image, err := imageloader.LoadImage(imagePath)
 	if err != nil {
