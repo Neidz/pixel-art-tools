@@ -5,6 +5,7 @@ import (
 	"image"
 	_ "image/jpeg"
 	_ "image/png"
+	"sync"
 )
 
 // PatternsInImage searches for a specified pattern within an image and returns a slice
@@ -17,25 +18,53 @@ func PatternsInImage(img image.Image, searchedPattern Pattern) []Pattern {
 	imgHeight := img.Bounds().Dy()
 
 	var patterns []Pattern
+	var wg sync.WaitGroup
+
+	results := make(chan Pattern)
 
 	spWidth, spHeight := patternBoxSize(searchedPattern)
 
 	// Iterate through the image to search for the pattern.
 	for offsetY := 0; offsetY <= imgHeight-spHeight; offsetY++ {
 		for offsetX := 0; offsetX <= imgWidth-spWidth; offsetX++ {
-			if isPatternInWindow(img, searchedPattern, offsetX, offsetY, tolerance) {
-				var pattern Pattern
-
-				for _, coordinate := range searchedPattern {
-					pattern = append(pattern, Coordinate{coordinate.X + offsetX, coordinate.Y + offsetY})
+			wg.Add(1)
+			go func(offsetX int, offsetY int) {
+				defer wg.Done()
+				pattern := processWindow(img, searchedPattern, offsetX, offsetY, tolerance)
+				if pattern != nil {
+					results <- pattern
 				}
-
-				patterns = append(patterns, pattern)
-			}
+			}(offsetX, offsetY)
 		}
 	}
 
+	go func() {
+		wg.Wait()
+		close(results)
+	}()
+
+	for pattern := range results {
+		patterns = append(patterns, pattern)
+	}
+
 	return patterns
+}
+
+// processWindow checks if a pattern exists within a specific window of the image
+// defined by the provided offset values. If the pattern is found within the window
+// it returns the pattern with adjusted coordinates relative to the window.
+// If the pattern is not found, it returns nil.
+func processWindow(img image.Image, sp Pattern, offsetX, offsetY, tolerance int) Pattern {
+	if isPatternInWindow(img, sp, offsetX, offsetY, tolerance) {
+		var pattern Pattern
+
+		for _, coordinate := range sp {
+			pattern = append(pattern, Coordinate{coordinate.X + offsetX, coordinate.Y + offsetY})
+		}
+
+		return pattern
+	}
+	return nil
 }
 
 // patternBoxSize calculates the width and height of smallest box that would contain provided pattern.
