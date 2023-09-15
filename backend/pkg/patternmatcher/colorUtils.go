@@ -5,6 +5,9 @@ import (
 	"image/color"
 )
 
+// AreColorsSimilar checks if two colors are similar within a specified threshold.
+// It returns true if the colors are similar based on the threshold, and an error
+// if the threshold is negative.
 func AreColorsSimilar(color1 color.Color, color2 color.Color, args ...int) (bool, error) {
 	threshold := 1
 
