@@ -15,7 +15,7 @@ func TestImageToPattern(t *testing.T) {
 		t.Errorf("Unexpected error: %v", err)
 	}
 	expectedPattern := Pattern{{1, 1}}
-	if !patternsAreEqual(pattern, expectedPattern) {
+	if !PatternsAreEqual(pattern, expectedPattern) {
 		t.Errorf("Expected pattern %v, but got %v", expectedPattern, pattern)
 	}
 
@@ -24,19 +24,7 @@ func TestImageToPattern(t *testing.T) {
 		t.Errorf("Unexpected error: %v", err)
 	}
 	expectedPattern = nil
-	if !patternsAreEqual(pattern, expectedPattern) {
+	if !PatternsAreEqual(pattern, expectedPattern) {
 		t.Errorf("Expected pattern %v, but got %v", expectedPattern, pattern)
 	}
-}
-
-func patternsAreEqual(p1, p2 Pattern) bool {
-	if len(p1) != len(p2) {
-		return false
-	}
-	for i := range p1 {
-		if p1[i] != p2[i] {
-			return false
-		}
-	}
-	return true
 }
