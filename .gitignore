@@ -7,11 +7,6 @@ backend/*.dylib
 backend/_test/
 backend/cmd/console/console
 
-# Ignore SvelteKit build output
-frontend/node_modules/
-frontend/.svelte/
-frontend/public/build/
-
 # Ignore Go dependencies
 /go.sum
 /go.mod
