@@ -13,7 +13,7 @@ The visualize action generates a visualization of patterns in a source image bas
 Example:
 
 ```
-go run -action visualize -sourceImagePath source.png -targetImagePath target.png -tolerance 2 -outputFileName result.png
+go run . -action visualize -sourceImagePath source.png -targetImagePath target.png -tolerance 2 -outputFileName result.png
 ```
 
 ### Action: Count Instances
@@ -27,5 +27,5 @@ The countInstances action counts the instances of a pattern from a target image 
 Example:
 
 ```
-go run -action visualize -sourceImagePath source.png -targetImagePath target.png -tolerance 2 -outputFileName result.png
+go run . -action visualize -sourceImagePath source.png -targetImagePath target.png -tolerance 2 -outputFileName result.png
 ```

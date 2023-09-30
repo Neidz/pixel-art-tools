@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"pixel-art-tools/backend/pkg/rplacefeed"
+	"pixel-art-tools/pkg/rplacefeed"
 )
 
 func main() {

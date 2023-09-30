@@ -6,8 +6,8 @@ import (
 	"image/color"
 	"image/png"
 	"os"
-	"pixel-art-tools/backend/pkg/imageloader"
-	"pixel-art-tools/backend/pkg/patternmatcher"
+	"pixel-art-tools/pkg/imageloader"
+	"pixel-art-tools/pkg/patternmatcher"
 )
 
 func main() {

@@ -9,7 +9,6 @@ backend/cmd/console/console
 
 # Ignore Go dependencies
 /go.sum
-/go.mod
 /bin/
 
 # Local
