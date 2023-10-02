@@ -8,6 +8,13 @@ import (
 	"time"
 )
 
+// ParseRecord parses a CSV record, extracting date, user, coordinates, and color.
+// It returns a CSVRecord struct and an error. If parsing is successful, the error is nil.
+// Input Parameters:
+//   - dateStr: Timestamp in "2006-01-02 15:04:05.999 UTC" format.
+//   - userStr: User identifier.
+//   - coordinatesStr: Coordinates in various formats (simple, rectangle, or circle).
+//   - colorStr: Color associated with the record.
 func ParseRecord(dateStr string, userStr, coordinatesStr string, colorStr string) (CSVRecord, error) {
 	var record CSVRecord
 
@@ -17,9 +24,9 @@ func ParseRecord(dateStr string, userStr, coordinatesStr string, colorStr string
 		return CSVRecord{}, err
 	}
 
-	rectanglePattern := regexp.MustCompile(`(\d+),(\d+),(\d+),(\d+)`)
-	circlePattern := regexp.MustCompile(`{X: (\d+), Y: (\d+), R: (\d+)}`)
-	simplePattern := regexp.MustCompile(`(\d+),(\d+)`)
+	rectanglePattern := regexp.MustCompile(`(-?\d+),(-?\d+),(-?\d+),(-?\d+)`)
+	circlePattern := regexp.MustCompile(`{X:(-?\d+),Y:(-?\d+),R:(-?\d+)}`)
+	simplePattern := regexp.MustCompile(`(-?\d+),(-?\d+)`)
 
 	if matches := rectanglePattern.FindStringSubmatch(coordinatesStr); len(matches) == 5 {
 		x1, _ := strconv.Atoi(matches[1])

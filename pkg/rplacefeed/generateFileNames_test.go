@@ -9,17 +9,17 @@ func TestGenerateFileName(t *testing.T) {
 	number1 := 7
 	number2 := 137
 
-	path1 := generateFileName(baseName, numbersInName, number1, extension)
-	expectedPath1 := "aperture-science-0000000007"
+	name1 := generateFileName(baseName, numbersInName, number1, extension)
+	expectedName1 := "aperture-science-0000000007.csv"
 
-	if path1 != expectedPath1 {
-		t.Errorf("Expected file name %q but got %q", expectedPath1, path1)
+	if name1 != expectedName1 {
+		t.Errorf("Expected file name %q but got %q", expectedName1, name1)
 	}
 
-	path2 := generateFileName(baseName, numbersInName, number2, extension)
-	expectedPath2 := "aperture-science-0000000137"
+	name2 := generateFileName(baseName, numbersInName, number2, extension)
+	expectedName2 := "aperture-science-0000000137.csv"
 
-	if path2 != expectedPath2 {
-		t.Errorf("Expected file name %q but got %q", expectedPath2, path2)
+	if name2 != expectedName2 {
+		t.Errorf("Expected file name %q but got %q", expectedName2, name2)
 	}
 }
