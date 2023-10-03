@@ -2,23 +2,22 @@ package rplacefeed
 
 import (
 	"encoding/csv"
-	"errors"
 	"fmt"
-	"image/color"
-	"image/draw"
+	"image"
 	_ "image/jpeg"
 	_ "image/png"
 	"os"
 )
 
-func FeedToImages(paths []string) {
-	// img := image.NewRGBA(image.Rect(0, 0, 0, 0))
+func FeedToImages(paths []string) (image.Image, error) {
+	img := image.NewRGBA(image.Rect(0, 0, 1, 1))
+	offsetLeft := 0
+	offsetTop := 0
 
 	for _, path := range paths {
 		file, err := os.Open(path)
 		if err != nil {
-			fmt.Println("Error opening file:", err)
-			return
+			return nil, err
 		}
 		defer file.Close()
 
@@ -28,28 +27,31 @@ func FeedToImages(paths []string) {
 			record, err := reader.Read()
 
 			if err != nil {
-				break
+				return nil, err
 			}
 
 			if len(record) < 3 {
 				fmt.Println("Unexpected record with less than 3 columns.")
+				continue
 			} else if len(record) > 4 {
 				fmt.Println("Unexpected record with less than 3 columns.")
+				continue
 			}
 
-			// rest here
+			parsedRecord, err := ParseRecord(record[0], record[1], record[2], record[3])
+
+			if err != nil {
+				fmt.Println("Error: ", err)
+				continue
+			}
+
+			drawErr := DrawCoordinates(img, parsedRecord.Coordinates, parsedRecord.Color, offsetLeft, offsetTop)
+
+			if drawErr != nil {
+				fmt.Println("Error: ", drawErr)
+			}
 		}
 	}
-}
 
-// setPixel sets the color of a pixel at the specified coordinates in the image.
-// It checks whether the pixel coordinates are within bounds and returns an error
-// including invalid coordinates if they are out of bounds.
-func setPixel(img draw.Image, x, y int, color color.Color) error {
-	if x < 0 || x >= img.Bounds().Dx() || y < 0 || y >= img.Bounds().Dy() {
-		errorMsg := fmt.Sprintf("pixel coordinates out of bounds {%d, %d}", x, y)
-		return errors.New(errorMsg)
-	}
-	img.Set(x, y, color)
-	return nil
+	return img, nil
 }

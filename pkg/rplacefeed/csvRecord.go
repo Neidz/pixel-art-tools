@@ -1,12 +1,27 @@
 package rplacefeed
 
-import "time"
+import (
+	"image/color"
+	"time"
+)
 
 type Coordinates struct {
 	X         int
 	Y         int
 	Rectangle Rectangle
 	Circle    Circle
+}
+
+func (c *Coordinates) IsCircle() bool {
+	return c.Circle != Circle{}
+}
+
+func (c *Coordinates) IsRectangle() bool {
+	return c.Rectangle != Rectangle{}
+}
+
+func (c *Coordinates) IsPoint() bool {
+	return c.Circle == Circle{} && c.Rectangle == Rectangle{}
 }
 
 type Rectangle struct {
@@ -26,5 +41,5 @@ type CSVRecord struct {
 	Date        time.Time
 	User        string
 	Coordinates Coordinates
-	Color       string
+	Color       color.Color
 }

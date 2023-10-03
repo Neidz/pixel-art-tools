@@ -2,7 +2,8 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	"image/png"
+	"os"
 	"pixel-art-tools/pkg/rplacefeed"
 )
 
@@ -15,12 +16,27 @@ func main() {
 	flag.Parse()
 
 	numbersInPath := 12
-	// amountOfFiles := 53
-	amountOfFiles := 5
+
+	amountOfFiles := 6
 
 	fileNames := rplacefeed.GenerateFileNames(baseName, numbersInPath, amountOfFiles, ".csv")
 
 	paths := rplacefeed.GenerateAndVerifyPaths(directoryPath, fileNames)
 
-	fmt.Println(paths)
+	img, err := rplacefeed.FeedToImages(paths)
+
+	if err != nil {
+		panic(err)
+	}
+
+	file, err := os.Create("rplaceFeedImage")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	err = png.Encode(file, img)
+	if err != nil {
+		panic(err)
+	}
 }
