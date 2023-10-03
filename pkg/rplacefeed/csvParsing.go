@@ -3,6 +3,7 @@ package rplacefeed
 import (
 	"errors"
 	"fmt"
+	"image/color"
 	"regexp"
 	"strconv"
 	"time"
@@ -14,7 +15,7 @@ import (
 //   - dateStr: Timestamp in "2006-01-02 15:04:05.999 UTC" format.
 //   - userStr: User identifier.
 //   - coordinatesStr: Coordinates in various formats (simple, rectangle, or circle).
-//   - colorStr: Color associated with the record.
+//   - colorStr: Hex color associated with the record.
 func ParseRecord(dateStr string, userStr, coordinatesStr string, colorStr string) (CSVRecord, error) {
 	var record CSVRecord
 
@@ -22,6 +23,12 @@ func ParseRecord(dateStr string, userStr, coordinatesStr string, colorStr string
 
 	if err != nil {
 		return CSVRecord{}, err
+	}
+
+	color, err := parseHexColor(colorStr)
+
+	if err != nil {
+		return record, err
 	}
 
 	rectanglePattern := regexp.MustCompile(`(-?\d+),(-?\d+),(-?\d+),(-?\d+)`)
@@ -45,15 +52,42 @@ func ParseRecord(dateStr string, userStr, coordinatesStr string, colorStr string
 		record.Coordinates.X = x
 		record.Coordinates.Y = y
 	} else {
-		fmt.Println("failed to parse coordinates:", coordinatesStr)
 		errorMsg := fmt.Sprint("failed to parse coordinates:", coordinatesStr)
 		return record, errors.New(errorMsg)
 	}
 
 	record.Date = timestamp
 	record.User = userStr
-
-	record.Color = colorStr
+	record.Color = color
 
 	return record, nil
+}
+
+// parseHexColor parses a hexadecimal color string (e.g., "#RRGGBB" or "#RRGGBBAA")
+// and returns a color.Color value representing the color. It validates the input
+// format, converts it to RGBA, and handles an optional alpha channel (AA).
+// If the input is invalid, it returns an error.
+func parseHexColor(hex string) (color.Color, error) {
+	hexPattern := regexp.MustCompile(`^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$`)
+
+	if !hexPattern.MatchString(hex) {
+		return nil, fmt.Errorf("invalid hex color format: %s", hex)
+	}
+
+	if hex[0] == '#' {
+		hex = hex[1:]
+	}
+
+	r, _ := strconv.ParseUint(hex[0:2], 16, 8)
+	g, _ := strconv.ParseUint(hex[2:4], 16, 8)
+	b, _ := strconv.ParseUint(hex[4:6], 16, 8)
+
+	var a uint64
+	if len(hex) == 8 {
+		a, _ = strconv.ParseUint(hex[6:8], 16, 8)
+	} else {
+		a = 255
+	}
+
+	return color.RGBA{R: uint8(r), G: uint8(g), B: uint8(b), A: uint8(a)}, nil
 }
