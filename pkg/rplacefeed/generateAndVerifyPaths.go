@@ -23,7 +23,7 @@ func GenerateAndVerifyPaths(basePath string, fileNames []string) []string {
 		}
 	}
 
-	return fileNames
+	return paths
 }
 
 func verifyFile(path string) (int, error) {

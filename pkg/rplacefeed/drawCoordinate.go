@@ -23,6 +23,8 @@ func DrawCoordinates(img draw.Image, coordinates Coordinates, color color.Color,
 		x := coordinates.X + offsetLeft
 		y := coordinates.Y + offsetTop
 
+		fmt.Printf("Point at: %d, %d; color: %+v\n", x, y, color)
+
 		err := setPixel(img, x, y, color)
 		if err != nil {
 			return err
@@ -31,12 +33,16 @@ func DrawCoordinates(img draw.Image, coordinates Coordinates, color color.Color,
 		x := coordinates.Circle.X + offsetLeft
 		y := coordinates.Circle.Y + offsetTop
 
+		fmt.Printf("Circle at: %d, %d; radius: %d; color: %+v\n", x, y, coordinates.Circle.R, color)
+
 		drawCircle(img, x, y, coordinates.Circle.R, color)
 	} else if coordinates.IsRectangle() {
 		x1 := coordinates.Rectangle.X1 + offsetLeft
 		y1 := coordinates.Rectangle.Y1 + offsetTop
 		x2 := coordinates.Rectangle.X2 + offsetLeft
 		y2 := coordinates.Rectangle.Y2 + offsetTop
+
+		fmt.Printf("Rectangle at(x1, y1, x2, y2): %d, %d, %d, %d; color: %+v\n", x1, y1, x2, y2, color)
 
 		drawRectangle(img, x1, y1, x2, y2, color)
 	} else {

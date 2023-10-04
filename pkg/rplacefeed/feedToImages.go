@@ -6,6 +6,7 @@ import (
 	"image"
 	_ "image/jpeg"
 	_ "image/png"
+	"io"
 	"os"
 )
 
@@ -14,7 +15,8 @@ func FeedToImages(paths []string) (image.Image, error) {
 	offsetLeft := 0
 	offsetTop := 0
 
-	for _, path := range paths {
+	for i, path := range paths {
+		recordNumber := 0
 		file, err := os.Open(path)
 		if err != nil {
 			return nil, err
@@ -25,8 +27,14 @@ func FeedToImages(paths []string) (image.Image, error) {
 
 		for {
 			record, err := reader.Read()
+			recordNumber++
 
-			if err != nil {
+			fmt.Println("Record: ", i, ", line: ", recordNumber)
+
+			if err == io.EOF {
+				fmt.Println("Finished parsing file with path: ", path)
+				break
+			} else if err != nil {
 				return nil, err
 			}
 
