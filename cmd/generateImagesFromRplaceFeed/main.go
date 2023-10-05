@@ -17,7 +17,7 @@ func main() {
 
 	numbersInPath := 12
 
-	amountOfFiles := 6
+	amountOfFiles := 1
 
 	fileNames := rplacefeed.GenerateFileNames(baseName, numbersInPath, amountOfFiles, ".csv")
 

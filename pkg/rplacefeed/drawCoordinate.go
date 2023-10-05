@@ -10,7 +10,7 @@ import (
 	_ "image/png"
 )
 
-func DrawCoordinates(img draw.Image, coordinates Coordinates, color color.Color, offsetLeft int, offsetTop int) error {
+func DrawCoordinates(img draw.Image, coordinates Coordinates, color color.Color, offsetLeft int, offsetTop int) (draw.Image, int, int, error) {
 	leftExpand, rightExpand, topExpand, bottomExpand := CalculateExpansion(img, coordinates, offsetLeft, offsetTop)
 
 	if leftExpand != 0 || rightExpand != 0 || topExpand != 0 || bottomExpand != 0 {
@@ -25,9 +25,11 @@ func DrawCoordinates(img draw.Image, coordinates Coordinates, color color.Color,
 
 		fmt.Printf("Point at: %d, %d; color: %+v\n", x, y, color)
 
-		err := setPixel(img, x, y, color)
+		modifiedImg, err := setPixel(img, x, y, color)
+
+		img = modifiedImg
 		if err != nil {
-			return err
+			return img, offsetLeft, offsetTop, err
 		}
 	} else if coordinates.IsCircle() {
 		x := coordinates.Circle.X + offsetLeft
@@ -35,7 +37,8 @@ func DrawCoordinates(img draw.Image, coordinates Coordinates, color color.Color,
 
 		fmt.Printf("Circle at: %d, %d; radius: %d; color: %+v\n", x, y, coordinates.Circle.R, color)
 
-		drawCircle(img, x, y, coordinates.Circle.R, color)
+		modifiedImg := drawCircle(img, x, y, coordinates.Circle.R, color)
+		img = modifiedImg
 	} else if coordinates.IsRectangle() {
 		x1 := coordinates.Rectangle.X1 + offsetLeft
 		y1 := coordinates.Rectangle.Y1 + offsetTop
@@ -44,12 +47,13 @@ func DrawCoordinates(img draw.Image, coordinates Coordinates, color color.Color,
 
 		fmt.Printf("Rectangle at(x1, y1, x2, y2): %d, %d, %d, %d; color: %+v\n", x1, y1, x2, y2, color)
 
-		drawRectangle(img, x1, y1, x2, y2, color)
+		modifiedImg := drawRectangle(img, x1, y1, x2, y2, color)
+		img = modifiedImg
 	} else {
-		return errors.New("coordinates don't match point, circle or rectangle ")
+		return img, offsetLeft, offsetTop, errors.New("coordinates don't match point, circle or rectangle ")
 	}
 
-	return nil
+	return img, offsetLeft, offsetTop, nil
 }
 
 func CalculateExpansion(img image.Image, coordinate Coordinates, offsetLeft int, offsetTop int) (leftExpand, rightExpand, topExpand, bottomExpand int) {
@@ -134,22 +138,27 @@ func expandImage(img draw.Image, top, bottom, left, right int) draw.Image {
 	return newImage
 }
 
-func setPixel(img draw.Image, x, y int, color color.Color) error {
+func setPixel(img draw.Image, x, y int, color color.Color) (draw.Image, error) {
 	if x < 0 || x >= img.Bounds().Dx() || y < 0 || y >= img.Bounds().Dy() {
 		errorMsg := fmt.Sprintf("pixel coordinates out of bounds {%d, %d}", x, y)
-		return errors.New(errorMsg)
+		return img, errors.New(errorMsg)
 	}
 	img.Set(x, y, color)
-	return nil
+
+	return img, nil
 }
 
-func drawRectangle(img draw.Image, x1, y1, x2, y2 int, color color.Color) {
+func drawRectangle(img draw.Image, x1, y1, x2, y2 int, color color.Color) draw.Image {
 	rect := image.Rect(x1, y1, x2, y2)
 	draw.Draw(img, rect, &image.Uniform{color}, image.Point{}, draw.Src)
+
+	return img
 }
 
-func drawCircle(img draw.Image, x, y, radius int, color color.Color) {
+func drawCircle(img draw.Image, x, y, radius int, color color.Color) draw.Image {
 	draw.DrawMask(img, img.Bounds(), &image.Uniform{color}, image.Point{}, &circleMask{x, y, radius}, image.Point{}, draw.Over)
+
+	return img
 }
 
 type circleMask struct {

@@ -53,10 +53,20 @@ func FeedToImages(paths []string) (image.Image, error) {
 				continue
 			}
 
-			drawErr := DrawCoordinates(img, parsedRecord.Coordinates, parsedRecord.Color, offsetLeft, offsetTop)
+			modifiedImg, modifiedOffsetLeft, modifiedOffsetTop, drawErr := DrawCoordinates(img, parsedRecord.Coordinates, parsedRecord.Color, offsetLeft, offsetTop)
 
 			if drawErr != nil {
 				fmt.Println("Error: ", drawErr)
+			} else {
+				modifiedImg, ok := modifiedImg.(*image.RGBA)
+
+				if !ok {
+					fmt.Println("Error: failed to convert image.Image to *image.RGBA")
+				} else {
+					img = modifiedImg
+					offsetLeft = modifiedOffsetLeft
+					offsetTop = modifiedOffsetTop
+				}
 			}
 		}
 	}
