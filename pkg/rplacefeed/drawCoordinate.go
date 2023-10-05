@@ -8,8 +8,12 @@ import (
 	"image/draw"
 	_ "image/jpeg"
 	_ "image/png"
+	"math"
 )
 
+// DrawCoordinates draws shapes or points on the given image based on the provided coordinates and color.
+// It also expands the image and adjusts offsets if necessary to ensure the coordinates fit within the image bounds.
+// Returns the modified image, updated offsets, and an error, if any.
 func DrawCoordinates(img draw.Image, coordinates Coordinates, color color.Color, offsetLeft int, offsetTop int) (draw.Image, int, int, error) {
 	leftExpand, rightExpand, topExpand, bottomExpand := CalculateExpansion(img, coordinates, offsetLeft, offsetTop)
 
@@ -56,6 +60,8 @@ func DrawCoordinates(img draw.Image, coordinates Coordinates, color color.Color,
 	return img, offsetLeft, offsetTop, nil
 }
 
+// CalculateExpansion calculates how much the image needs to be expanded on each side (left, right, top, bottom)
+// to accommodate the specified coordinates. It takes into account the current offsets.
 func CalculateExpansion(img image.Image, coordinate Coordinates, offsetLeft int, offsetTop int) (leftExpand, rightExpand, topExpand, bottomExpand int) {
 	imgWidth := img.Bounds().Dx()
 	imgHeight := img.Bounds().Dy()
@@ -123,6 +129,8 @@ func CalculateExpansion(img image.Image, coordinate Coordinates, offsetLeft int,
 	return leftExpand, rightExpand, topExpand, bottomExpand
 }
 
+// expandImage expands the given image by adding empty space around it on all sides, as specified by top, bottom, left, and right values.
+// Returns the expanded image.
 func expandImage(img draw.Image, top, bottom, left, right int) draw.Image {
 	width := img.Bounds().Dx() + left + right
 	height := img.Bounds().Dy() + top + bottom
@@ -138,6 +146,8 @@ func expandImage(img draw.Image, top, bottom, left, right int) draw.Image {
 	return newImage
 }
 
+// setPixel sets the color of a pixel at the specified coordinates (x, y) in the given image.
+// Returns the modified image and an error if the coordinates are out of bounds.
 func setPixel(img draw.Image, x, y int, color color.Color) (draw.Image, error) {
 	if x < 0 || x >= img.Bounds().Dx() || y < 0 || y >= img.Bounds().Dy() {
 		errorMsg := fmt.Sprintf("pixel coordinates out of bounds {%d, %d}", x, y)
@@ -148,6 +158,9 @@ func setPixel(img draw.Image, x, y int, color color.Color) (draw.Image, error) {
 	return img, nil
 }
 
+// drawRectangle draws a filled rectangle on the provided image.
+// It starts from the top-left corner (x1, y1) and ends at the bottom-right corner (x2, y2),
+// filling pixels inside the rectangle with the specified color.
 func drawRectangle(img draw.Image, x1, y1, x2, y2 int, color color.Color) draw.Image {
 	rect := image.Rect(x1, y1, x2, y2)
 	draw.Draw(img, rect, &image.Uniform{color}, image.Point{}, draw.Src)
@@ -155,28 +168,22 @@ func drawRectangle(img draw.Image, x1, y1, x2, y2 int, color color.Color) draw.I
 	return img
 }
 
+// drawCircle draws a filled circle on the provided image.
+// It starts from the center (x, y) with the given radius,
+// filling pixels inside the circle with the specified color.
 func drawCircle(img draw.Image, x, y, radius int, color color.Color) draw.Image {
-	draw.DrawMask(img, img.Bounds(), &image.Uniform{color}, image.Point{}, &circleMask{x, y, radius}, image.Point{}, draw.Over)
+	for i := x - radius; i <= x+radius; i++ {
+		for j := y - radius; j <= y+radius; j++ {
+			dx := float64(i-x) + 0.5
+			dy := float64(j-y) + 0.5
+
+			distance := math.Sqrt(dx*dx + dy*dy)
+
+			if distance <= float64(radius) {
+				img.Set(i, j, color)
+			}
+		}
+	}
 
 	return img
-}
-
-type circleMask struct {
-	x, y, r int
-}
-
-func (c *circleMask) ColorModel() color.Model {
-	return color.AlphaModel
-}
-
-func (c *circleMask) Bounds() image.Rectangle {
-	return image.Rect(c.x-c.r, c.y-c.r, c.x+c.r, c.y+c.r)
-}
-
-func (c *circleMask) At(x, y int) color.Color {
-	xx, yy, rr := float64(x-c.x)+0.5, float64(y-c.y)+0.5, float64(c.r)
-	if xx*xx+yy*yy < rr*rr {
-		return color.Alpha{255}
-	}
-	return color.Alpha{0}
 }

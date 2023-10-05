@@ -4,16 +4,22 @@ import (
 	"encoding/csv"
 	"fmt"
 	"image"
+	"image/color"
+	"image/draw"
 	_ "image/jpeg"
 	_ "image/png"
 	"io"
 	"os"
 )
 
+// FeedToImages reads a list of file paths, parses CSV records from these files, and applies the actions described by the records on an image.
+// It returns the final modified image.
 func FeedToImages(paths []string) (image.Image, error) {
 	img := image.NewRGBA(image.Rect(0, 0, 1, 1))
 	offsetLeft := 0
 	offsetTop := 0
+
+	draw.Draw(img, img.Bounds(), &image.Uniform{color.RGBA{255, 255, 255, 255}}, image.Point{}, draw.Src)
 
 	for i, path := range paths {
 		recordNumber := 0
