@@ -28,10 +28,24 @@ func TestParseRecord(t *testing.T) {
 			expectedCoordinates: Coordinates{X: 0, Y: 0, Circle: Circle{X: 424, Y: 336, R: 3}},
 		},
 		{
+			name:                "Valid Circle Coordinate With Spaces",
+			colorStr:            "#FF0000",
+			expectedColor:       color.RGBA{R: 255, G: 0, B: 0, A: 255},
+			coordinatesStr:      "\"{X:424, Y:336, R:3}\"",
+			expectedCoordinates: Coordinates{X: 0, Y: 0, Circle: Circle{X: 424, Y: 336, R: 3}},
+		},
+		{
 			name:                "Valid Rectangle Coordinate",
 			colorStr:            "#00FF00",
 			expectedColor:       color.RGBA{R: 0, G: 255, B: 0, A: 255},
 			coordinatesStr:      "\"20,30,40,50\"",
+			expectedCoordinates: Coordinates{X: 0, Y: 0, Rectangle: Rectangle{X1: 20, Y1: 30, X2: 40, Y2: 50}},
+		},
+		{
+			name:                "Valid Rectangle Coordinate With Spaces",
+			colorStr:            "#00FF00",
+			expectedColor:       color.RGBA{R: 0, G: 255, B: 0, A: 255},
+			coordinatesStr:      "\"20, 30, 40, 50\"",
 			expectedCoordinates: Coordinates{X: 0, Y: 0, Rectangle: Rectangle{X1: 20, Y1: 30, X2: 40, Y2: 50}},
 		},
 		{

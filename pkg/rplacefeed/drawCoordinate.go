@@ -14,7 +14,7 @@ import (
 // DrawCoordinates draws shapes or points on the given image based on the provided coordinates and color.
 // It also expands the image and adjusts offsets if necessary to ensure the coordinates fit within the image bounds.
 // Returns the modified image, updated offsets, and an error, if any.
-func DrawCoordinates(img draw.Image, coordinates Coordinates, color color.Color, offsetLeft int, offsetTop int) (draw.Image, int, int, error) {
+func DrawCoordinates(img draw.Image, coordinates Coordinates, color color.Color, offsetLeft int, offsetTop int, verbose bool) (draw.Image, int, int, error) {
 	leftExpand, rightExpand, topExpand, bottomExpand := CalculateExpansion(img, coordinates, offsetLeft, offsetTop)
 
 	if leftExpand != 0 || rightExpand != 0 || topExpand != 0 || bottomExpand != 0 {
@@ -27,7 +27,9 @@ func DrawCoordinates(img draw.Image, coordinates Coordinates, color color.Color,
 		x := coordinates.X + offsetLeft
 		y := coordinates.Y + offsetTop
 
-		fmt.Printf("Point at: %d, %d; color: %+v\n", x, y, color)
+		if verbose {
+			fmt.Printf("Point at: %d, %d; color: %+v\n", x, y, color)
+		}
 
 		modifiedImg, err := setPixel(img, x, y, color)
 
@@ -39,7 +41,9 @@ func DrawCoordinates(img draw.Image, coordinates Coordinates, color color.Color,
 		x := coordinates.Circle.X + offsetLeft
 		y := coordinates.Circle.Y + offsetTop
 
-		fmt.Printf("Circle at: %d, %d; radius: %d; color: %+v\n", x, y, coordinates.Circle.R, color)
+		if verbose {
+			fmt.Printf("Circle at: %d, %d; radius: %d; color: %+v\n", x, y, coordinates.Circle.R, color)
+		}
 
 		modifiedImg := drawCircle(img, x, y, coordinates.Circle.R, color)
 		img = modifiedImg
@@ -49,7 +53,10 @@ func DrawCoordinates(img draw.Image, coordinates Coordinates, color color.Color,
 		x2 := coordinates.Rectangle.X2 + offsetLeft
 		y2 := coordinates.Rectangle.Y2 + offsetTop
 
-		fmt.Printf("Rectangle at(x1, y1, x2, y2): %d, %d, %d, %d; color: %+v\n", x1, y1, x2, y2, color)
+		if verbose {
+			fmt.Printf("Rectangle at(x1, y1, x2, y2): %d, %d, %d, %d; color: %+v\n", x1, y1, x2, y2, color)
+
+		}
 
 		modifiedImg := drawRectangle(img, x1, y1, x2, y2, color)
 		img = modifiedImg

@@ -16,7 +16,7 @@ import (
 //   - userStr: User identifier.
 //   - coordinatesStr: Coordinates in various formats (simple, rectangle, or circle).
 //   - colorStr: Hex color associated with the record.
-func ParseRecord(dateStr string, userStr, coordinatesStr string, colorStr string) (CSVRecord, error) {
+func ParseRecord(dateStr, userStr, coordinatesStr, colorStr string) (CSVRecord, error) {
 	var record CSVRecord
 
 	timestamp, err := time.Parse("2006-01-02 15:04:05.999 UTC", dateStr)
@@ -31,8 +31,8 @@ func ParseRecord(dateStr string, userStr, coordinatesStr string, colorStr string
 		return record, err
 	}
 
-	rectanglePattern := regexp.MustCompile(`(-?\d+),(-?\d+),(-?\d+),(-?\d+)`)
-	circlePattern := regexp.MustCompile(`{X:(-?\d+),Y:(-?\d+),R:(-?\d+)}`)
+	rectanglePattern := regexp.MustCompile(`(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)`)
+	circlePattern := regexp.MustCompile(`{X:\s*(-?\d+),\s*Y:\s*(-?\d+),\s*R:\s*(-?\d+)}`)
 	simplePattern := regexp.MustCompile(`(-?\d+),(-?\d+)`)
 
 	if matches := rectanglePattern.FindStringSubmatch(coordinatesStr); len(matches) == 5 {
