@@ -1,6 +1,9 @@
 # About
 Pixel Art Tools is command-line utility wirten in Go that offers various functionalities for working with pixel arts and image processing. It's main focus is in analyzing and generating data using images and data created during event `r/place` event that takes place on reddit every now and then but `Visualize` and `Count Instances` modes can be used outside of this event since they are not tied to any specific pictures.
 
+# Link to .csv data
+All pixel data was made public in [this post on reddit](https://www.reddit.com/r/place/comments/15bjm5o/rplace_2023_data/).
+
 # Modes
 
 ## -mode visualize
@@ -88,11 +91,12 @@ Save images every 3 hours from all 53 .csv files (parsing all files from 2023 r/
 # Notes
 
 ### General
-- **if you want to create images from entire r/place event (17.9GB of .csv files from 2023) then you should really consider location of those files. Using HDD instead of SSD is going to be very slow, so move your data to your SSD since it will be abottleneck**
-- both visualize and countInstances use go routines, so the speed of finding patterns heavily depends on amount of threads of your cpu
-- verbose parameter in imagesFromRplaceFeed mode doesn't silence warnings, errors and important informations. Some problems won't stop program but will be printed to the console like for example failing to parse the line in .csv file
+- **if you want to create images from entire r/place event (17.9GB of .csv files from 2023) then you should really consider location of those files. Using HDD instead of SSD is going to be very slow, so move your data to your SSD since it will be abottleneck.**
+- imagesFromRplaceFeed mode assumes that all [data provided by reddit](https://www.reddit.com/r/place/comments/15bjm5o/rplace_2023_data/) is unpacked and in the same folder. Amount of numbers and file names are default values for `numbersInName` and `baseName`, so if raw data is provided without any changes (other than unpacking) then those arguments don't have to be passed.
+- both visualize and countInstances use go routines, so the speed of finding patterns heavily depends on amount of threads of your cpu.
+- verbose parameter in imagesFromRplaceFeed mode doesn't silence warnings, errors and important informations. Some problems won't stop program but will be printed to the console like for example failing to parse the line in .csv file.
 
 ### Rules for matching in visualize and countInstances modes
-- all pixels surrounding target have to be different color (big square of the same color won't be matched)
-- all pixels of matched target have to be the same color
-- target has to be exact match
+- all pixels surrounding target have to be different color (big square of the same color won't be matched).
+- all pixels of matched target have to be the same color.
+- target has to be exact match.
