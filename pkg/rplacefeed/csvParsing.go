@@ -25,7 +25,7 @@ func ParseRecord(dateStr, userStr, coordinatesStr, colorStr string) (CSVRecord, 
 		return CSVRecord{}, err
 	}
 
-	color, err := parseHexColor(colorStr)
+	color, err := ParseHexColor(colorStr)
 
 	if err != nil {
 		return record, err
@@ -63,11 +63,11 @@ func ParseRecord(dateStr, userStr, coordinatesStr, colorStr string) (CSVRecord, 
 	return record, nil
 }
 
-// parseHexColor parses a hexadecimal color string (e.g., "#RRGGBB" or "#RRGGBBAA")
+// ParseHexColor parses a hexadecimal color string (e.g., "#RRGGBB" or "#RRGGBBAA")
 // and returns a color.Color value representing the color. It validates the input
 // format, converts it to RGBA, and handles an optional alpha channel (AA).
 // If the input is invalid, it returns an error.
-func parseHexColor(hex string) (color.Color, error) {
+func ParseHexColor(hex string) (color.Color, error) {
 	hexPattern := regexp.MustCompile(`^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$`)
 
 	if !hexPattern.MatchString(hex) {

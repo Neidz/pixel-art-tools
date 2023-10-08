@@ -17,6 +17,7 @@ func main() {
 	var targetImagePath string
 	var tolerance int
 	var outputFileName string
+	var targetColor string
 
 	flag.StringVar(&mode, "mode", "countInstances", "Action that will be performed on provided images")
 
@@ -24,6 +25,7 @@ func main() {
 	flag.StringVar(&targetImagePath, "targetImagePath", "", "Path to the target image file")
 	flag.IntVar(&tolerance, "tolerance", 1, "Tolerance for extracting pattern from target image")
 	flag.StringVar(&outputFileName, "outputFileName", "visualization.png", "Name of the file generated with visualize function")
+	flag.StringVar(&targetColor, "targetColor", "#000000", "Color used for searching for target pattern")
 
 	var directoryPath string
 	var baseName string
@@ -49,16 +51,16 @@ func main() {
 
 	switch mode {
 	case "visualize":
-		visualize(sourceImagePath, targetImagePath, tolerance, outputFileName)
+		visualize(sourceImagePath, targetImagePath, tolerance, outputFileName, targetColor)
 	case "countInstances":
-		countInstances(sourceImagePath, targetImagePath, tolerance)
+		countInstances(sourceImagePath, targetImagePath, tolerance, targetColor)
 	case "imagesFromRplaceFeed":
 		imagesFromRplaceFeed(directoryPath, baseName, numbersInName, amountOfFiles, verbose, saveEveryHours, saveEveryMinutes, saveEveryValue, outputDir)
 	}
 
 }
 
-func visualize(sourceImagePath string, targetImagePath string, tolerance int, outputFileName string) {
+func visualize(sourceImagePath string, targetImagePath string, tolerance int, outputFileName string, targetColor string) {
 	if sourceImagePath == "" {
 		panic("Path to source image can't be empty")
 	}
@@ -72,6 +74,12 @@ func visualize(sourceImagePath string, targetImagePath string, tolerance int, ou
 		panic("Output file name can't be empty")
 	}
 
+	parsedTargetColor, err := rplacefeed.ParseHexColor(targetColor)
+
+	if err != nil {
+		panic(fmt.Sprintf("Invalid target color: %s. Please provide color in form of hex code\n", targetColor))
+	}
+
 	mainImage, err := imageloader.LoadImage(sourceImagePath)
 	if err != nil {
 		panic(err)
@@ -82,7 +90,7 @@ func visualize(sourceImagePath string, targetImagePath string, tolerance int, ou
 		panic(err)
 	}
 
-	pattern, err := patternmatcher.ImageToPattern(targetImage, color.White, 5)
+	pattern, err := patternmatcher.ImageToPattern(targetImage, parsedTargetColor, 5)
 
 	if err != nil {
 		panic(err)
@@ -106,7 +114,7 @@ func visualize(sourceImagePath string, targetImagePath string, tolerance int, ou
 	}
 }
 
-func countInstances(sourceImagePath string, targetImagePath string, tolerance int) {
+func countInstances(sourceImagePath string, targetImagePath string, tolerance int, targetColor string) {
 	if sourceImagePath == "" {
 		panic("Path to source image can't be empty")
 	}
@@ -115,6 +123,12 @@ func countInstances(sourceImagePath string, targetImagePath string, tolerance in
 	}
 	if tolerance < 0 {
 		panic("Tolerance has to be bigger or equal to 0")
+	}
+
+	parsedTargetColor, err := rplacefeed.ParseHexColor(targetColor)
+
+	if err != nil {
+		panic(fmt.Sprintf("Invalid target color: %s. Please provide color in form of hex code\n", targetColor))
 	}
 
 	sourceImage, err := imageloader.LoadImage(sourceImagePath)
@@ -127,7 +141,7 @@ func countInstances(sourceImagePath string, targetImagePath string, tolerance in
 		panic(err)
 	}
 
-	pattern, err := patternmatcher.ImageToPattern(targetImage, color.White, 5)
+	pattern, err := patternmatcher.ImageToPattern(targetImage, parsedTargetColor, 5)
 
 	if err != nil {
 		panic(err)

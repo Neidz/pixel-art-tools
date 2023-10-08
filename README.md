@@ -12,6 +12,7 @@ It takes the following command-line arguments:
 - `targetImagePath <path>`: Path to the target image file.
 - `tolerance <value>`(default: 1): Tolerance for extracting patterns from the target image (default is 1).
 - `outputFileName <filename>`(default: "visualization.png"): Name of the file generated with the visualization function.
+- `targetColor <value>`(default: #000000 (black)): Hex code of the color that will be used to search for target pattern.
 
 Example:
 
@@ -22,7 +23,7 @@ Only required parameters
 
 All parameters
 ```
-./pixelArtTools -mode visualize -sourceImagePath ./data/final_2023_place.png -targetImagePath ./data/reversedCrewmate.png -tolerance 2 -outputFileName result.png
+./pixelArtTools -mode visualize -sourceImagePath ./data/final_2023_place.png -targetImagePath ./data/reversedCrewmate.png -tolerance 2 -outputFileName result.png -targetColor #0000FF
 ```
 
 ## -mode countInstaces
@@ -33,6 +34,7 @@ It takes the following command-line arguments:
 - `sourceImagePath <path>`: Path to the source image file.
 - `targetImagePath <path>`: Path to the target image file.
 - `tolerance <value>`(default: 1): Tolerance for extracting patterns from the target image.
+- `targetColor <value>`(default: #000000): Hex code of the color that will be used to search for target pattern.
   
 Example:
 
@@ -43,7 +45,7 @@ Only required parameters
 
 All parameters
 ```
-./pixelArtTools -mode countInstances -sourceImagePath ./data/final_2023_place.png -targetImagePath ./data/reversedCrewmate.png -tolerance 2
+./pixelArtTools -mode countInstances -sourceImagePath ./data/final_2023_place.png -targetImagePath ./data/reversedCrewmate.png -tolerance 2 -targetColor #0000FF
 ```
 
 ## -mode imagesFromRplaceFeed
@@ -82,3 +84,15 @@ Save images every 3 hours from all 53 .csv files (parsing all files from 2023 r/
 ```
 ./pixelArtTools -mode imagesFromRplaceFeed -directoryPath ./data/rplace_data -baseName 2023_place_canvas_history- -numbersInPath 12 -amountOfFiles 53 -saveEveryHours true -saveEveryValue 3
 ```
+
+# Notes
+
+### General
+- **if you want to create images from entire r/place event (17.9GB of .csv files from 2023) then you should really consider location of those files. Using HDD instead of SSD is going to be very slow, so move your data to your SSD since it will be abottleneck**
+- both visualize and countInstances use go routines, so the speed of finding patterns heavily depends on amount of threads of your cpu
+- verbose parameter in imagesFromRplaceFeed mode doesn't silence warnings, errors and important informations. Some problems won't stop program but will be printed to the console like for example failing to parse the line in .csv file
+
+### Rules for matching in visualize and countInstances modes
+- all pixels surrounding target have to be different color (big square of the same color won't be matched)
+- all pixels of matched target have to be the same color
+- target has to be exact match
