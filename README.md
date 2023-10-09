@@ -3,13 +3,13 @@ Pixel Art Tools is command-line utility wirten in Go that offers various functio
 
 # Showcase
 ### Counting amount of pixel arts in different pixel art (-mode countInstances)
-![countInstances showcase](assets/readme/countInstances.mp4)
+https://github.com/Neidz/pixel-art-tools/assets/68917960/ae41995b-f46a-48c8-a725-8bfd9f12abc3
 
 ### Visualizing pixel arts in different pixel art (-mode visualize)
-![visualize showcase](assets/readme/visualize.mp4)
+https://github.com/Neidz/pixel-art-tools/assets/68917960/6af008b0-9177-4989-a0ba-137722682edb
 
 ### Parsing r/place .csv data and creating images on specified intervals (-mode imagesFromRplaceFeed)
-![imagesFromRplaceFeed showcase](assets/readme/imagesFromRplaceFeed.mp4)
+https://github.com/Neidz/pixel-art-tools/assets/68917960/431ba84f-f07e-4637-b803-85a139dde3be
 
 # Permissions
 On Unix-based systems you will have to give executable permission to run
