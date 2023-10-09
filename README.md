@@ -2,13 +2,13 @@
 Pixel Art Tools is command-line utility wirten in Go that offers various functionalities for working with pixel arts and image processing. It's main focus is in analyzing and generating data using images and data created during event `r/place` event that takes place on reddit every now and then but `Visualize` and `Count Instances` modes can be used outside of this event since they are not tied to any specific pictures.
 
 # Showcase
-### Counting amount of pixel arts in different pixel art (-mode countInstances)
+### Counting amount of pixel arts in different pixel art (-mode countInstances, video is sped up, counting took about 5 seconds)
 https://github.com/Neidz/pixel-art-tools/assets/68917960/ae41995b-f46a-48c8-a725-8bfd9f12abc3
 
-### Visualizing pixel arts in different pixel art (-mode visualize)
+### Visualizing pixel arts in different pixel art (-mode visualize, video is sped up, generating image took about 5 seconds)
 https://github.com/Neidz/pixel-art-tools/assets/68917960/6af008b0-9177-4989-a0ba-137722682edb
 
-### Parsing r/place .csv data and creating images on specified intervals (-mode imagesFromRplaceFeed)
+### Parsing r/place .csv data and creating images on specified intervals (-mode imagesFromRplaceFeed, video is sped up, parsing took about 1 minute per .csv file, so 3 minutes of parsing on video)
 https://github.com/Neidz/pixel-art-tools/assets/68917960/431ba84f-f07e-4637-b803-85a139dde3be
 
 # Permissions
