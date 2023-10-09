@@ -28,7 +28,7 @@ jobs:
 
             - name: Build
               run: |
-                  GOARCH=${{ matrix.goarch }} GOOS=${{ matrix.goos }} go build -o pixel-art-tools-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.ext }} /cmd/pixelArtTools/main.go
+                  GOARCH=${{ matrix.goarch }} GOOS=${{ matrix.goos }} go build -o pixel-art-tools-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.ext }} ./cmd/pixelArtTools/main.go
 
             - name: Create release
               id: create_release
