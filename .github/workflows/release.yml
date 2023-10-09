@@ -34,14 +34,6 @@ jobs:
             - name: Build for windows/amd64
               run: GOARCH=amd64 GOOS=windows go build -o ./publish/win-x64.exe ./cmd/pixelArtTools/main.go
 
-            - name: Set execute permissions
-              run: |
-                  chmod +x ./publish/osx-x64
-                  chmod +x ./publish/osx-arm
-                  chmod +x ./publish/linux-x64
-                  chmod +x ./publish/win-x64.exe
-              working-directory: ${{ github.workspace }}
-
             - name: Create Release
               id: create_release
               uses: actions/create-release@v1
