@@ -13,12 +13,6 @@ jobs:
     build:
         runs-on: ubuntu-latest
 
-        strategy:
-            matrix:
-                goos: [linux, darwin, windows]
-                goarch: [amd64, arm64]
-                ext: [exe, ""]
-
         steps:
             - name: Checkout code
               uses: actions/checkout@v3
