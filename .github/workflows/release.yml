@@ -28,9 +28,17 @@ jobs:
               with:
                   go-version: 1.21.1
 
-            - name: Build
-              run: |
-                  GOARCH=${{ matrix.goarch }} GOOS=${{ matrix.goos }} go build -o pixel-art-tools-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.ext }} ./cmd/pixelArtTools/main.go
+            - name: Build for darwin/amd64
+              run: GOARCH=amd64 GOOS=darwin go build -o ./publish/osx-x64 ./cmd/pixelArtTools/main.go
+
+            - name: Build for darwin/arm64
+              run: GOARCH=arm64 GOOS=darwin go build -o ./publish/osx-arm ./cmd/pixelArtTools/main.go
+
+            - name: Build for linux/amd64
+              run: GOARCH=amd64 GOOS=linux go build -o ./publish/linux-x64 ./cmd/pixelArtTools/main.go
+
+            - name: Build for windows/amd64
+              run: GOARCH=amd64 GOOS=windows go build -o ./publish/win-x64.exe ./cmd/pixelArtTools/main.go
 
             - name: Create Release
               id: create_release
@@ -43,12 +51,46 @@ jobs:
                   draft: false
                   prerelease: false
 
-            - name: Upload Release Asset
-              id: upload-release-asset
+            - name: Upload MacOS x64 Asset
+              id: upload_macos_arm
               uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: pixel-art-tools-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.ext }}
-                  asset_name: pixel-art-tools-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.ext }}
+                  asset_path: ./publish/osx-x64
+                  asset_name: pixel-art-tools-osx-x64
                   asset_content_type: application/octet-stream
-                  token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Upload MacOS Arm Asset
+              id: upload_macos_amd
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ./publish/osx-arm
+                  asset_name: pixel-art-tools-osx-arm
+                  asset_content_type: application/octet-stream
+
+            - name: Upload Linux Asset
+              id: upload_linux
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ./publish/linux-x64
+                  asset_name: pixel-art-tools-linux-x64
+                  asset_content_type: application/octet-stream
+
+            - name: Upload Linux Asset
+              id: upload_windows
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ./publish/win-x64.exe
+                  asset_name: pixel-art-tools-win-x64.exe
+                  asset_content_type: application/octet-stream
