@@ -1,0 +1,55 @@
+name: Create Release
+
+on:
+    workflow_dispatch:
+        inputs:
+            version:
+                description: "Specify the version for the release"
+                required: true
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                goos: [linux, darwin, windows]
+                goarch: [amd64, arm64]
+                ext: [exe, ""]
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Set up Go
+              uses: actions/setup-go@v4
+              with:
+                  go-version: 1.21.1
+
+            - name: Build
+              run: |
+                  GOARCH=${{ matrix.goarch }} GOOS=${{ matrix.goos }} go build -o pixel-art-tools-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.ext }} /cmd/pixelArtTools/main.go
+
+            - name: Create release
+              id: create_release
+              uses: softprops/action-gh-release@v1
+              with:
+                  files: |
+                      pixel-art-tools-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.ext }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  tag_name: ${{ github.event.inputs.version }}
+                  release_name: Release ${{ github.event.inputs.version }}
+                  body: |
+                      Release ${{ github.event.inputs.version }}
+
+            - name: Upload release assets
+              run: |
+                  for file in pixel-art-tools-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.ext }}; do
+                    curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                      -H "Content-Type: application/zip" \
+                      --data-binary "@$file" \
+                      "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release.outputs.id }}/assets?name=$file"
+                  done
+
+              env:
+                  REPO: ${{ github.repository }}
