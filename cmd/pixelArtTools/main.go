@@ -57,7 +57,6 @@ func main() {
 	case "imagesFromRplaceFeed":
 		imagesFromRplaceFeed(directoryPath, baseName, numbersInName, amountOfFiles, verbose, saveEveryHours, saveEveryMinutes, saveEveryValue, outputDir)
 	}
-
 }
 
 func visualize(sourceImagePath string, targetImagePath string, tolerance int, outputFileName string, targetColor string) {
